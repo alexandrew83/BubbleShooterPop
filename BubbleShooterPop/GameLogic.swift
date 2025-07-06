@@ -19,13 +19,14 @@ class GameLogic: ObservableObject {
     }
     
     func generateNextBubbles() {
+        let bounds = grid.getGameBounds()
         currentBubble = Bubble(
             type: BubbleType.normalTypes.randomElement() ?? .red,
-            position: CGPoint(x: grid.getGameBounds().width / 2, y: grid.getGameBounds().height - 100)
+            position: CGPoint(x: bounds.width / 2, y: bounds.height - 60)
         )
         nextBubble = Bubble(
             type: BubbleType.normalTypes.randomElement() ?? .red,
-            position: CGPoint(x: grid.getGameBounds().width / 2, y: grid.getGameBounds().height - 50)
+            position: CGPoint(x: bounds.width / 2 + 80, y: bounds.height - 60)
         )
     }
     

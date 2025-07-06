@@ -6,8 +6,8 @@ class BubbleGrid: ObservableObject {
     
     let rows: Int = 12
     let columns: Int = 8
-    let bubbleSize: CGFloat = 50
-    let spacing: CGFloat = 5
+    let bubbleSize: CGFloat = 40
+    let spacing: CGFloat = 2
     
     private var gridWidth: CGFloat {
         CGFloat(columns) * (bubbleSize + spacing) - spacing
@@ -20,6 +20,9 @@ class BubbleGrid: ObservableObject {
     func generateInitialGrid() {
         bubbles.removeAll()
         
+        let gameWidth: CGFloat = 400
+        let startX: CGFloat = (gameWidth - gridWidth) / 2
+        
         // Generate initial 6 rows of bubbles
         for row in 0..<6 {
             let isEvenRow = row % 2 == 0
@@ -27,8 +30,8 @@ class BubbleGrid: ObservableObject {
             let offsetX: CGFloat = isEvenRow ? 0 : (bubbleSize + spacing) / 2
             
             for col in 0..<bubblesInRow {
-                let x = offsetX + CGFloat(col) * (bubbleSize + spacing) + bubbleSize / 2
-                let y = CGFloat(row) * (bubbleSize * 0.866 + spacing) + bubbleSize / 2 // 0.866 for hexagonal packing
+                let x = startX + offsetX + CGFloat(col) * (bubbleSize + spacing) + bubbleSize / 2
+                let y = CGFloat(row) * (bubbleSize * 0.866 + spacing) + bubbleSize / 2 + 50
                 
                 let randomType = BubbleType.normalTypes.randomElement() ?? .red
                 let bubble = Bubble(type: randomType, position: CGPoint(x: x, y: y))
@@ -138,14 +141,16 @@ class BubbleGrid: ObservableObject {
     }
     
     private func addNewTopRow() {
-        let newRow = bubbles.isEmpty ? 0 : 0 // Always add to top
+        let gameWidth: CGFloat = 400
+        let startX: CGFloat = (gameWidth - gridWidth) / 2
+        let newRow = 0 // Always add to top
         let isEvenRow = newRow % 2 == 0
         let bubblesInRow = isEvenRow ? columns : columns - 1
         let offsetX: CGFloat = isEvenRow ? 0 : (bubbleSize + spacing) / 2
         
         for col in 0..<bubblesInRow {
-            let x = offsetX + CGFloat(col) * (bubbleSize + spacing) + bubbleSize / 2
-            let y = CGFloat(newRow) * (bubbleSize * 0.866 + spacing) + bubbleSize / 2
+            let x = startX + offsetX + CGFloat(col) * (bubbleSize + spacing) + bubbleSize / 2
+            let y = CGFloat(newRow) * (bubbleSize * 0.866 + spacing) + bubbleSize / 2 + 50
             
             let randomType = BubbleType.normalTypes.randomElement() ?? .red
             let bubble = Bubble(type: randomType, position: CGPoint(x: x, y: y))
@@ -157,8 +162,8 @@ class BubbleGrid: ObservableObject {
         return CGRect(
             x: 0,
             y: 0,
-            width: gridWidth,
-            height: CGFloat(rows) * (bubbleSize * 0.866 + spacing)
+            width: 400, // Fixed width for iPad
+            height: 600  // Fixed height for game area
         )
     }
 }

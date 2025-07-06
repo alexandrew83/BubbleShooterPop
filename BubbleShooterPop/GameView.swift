@@ -3,6 +3,8 @@ import SwiftUI
 struct GameView: View {
     @StateObject private var gameLogic = GameLogic()
     @StateObject private var soundManager = SoundManager()
+    @State private var dragLocation: CGPoint = .zero
+    @State private var isDragging: Bool = false
     
     let pauseGame: () -> Void
     let endGame: () -> Void
@@ -71,13 +73,51 @@ struct GameView: View {
                     .padding(.horizontal, 20)
                     .padding(.top, 10)
                     
-                    // Game Scene
-                    GameSceneView(gameLogic: gameLogic)
-                        .frame(
-                            width: min(geometry.size.width, 400),
-                            height: geometry.size.height * 0.8
-                        )
-                        .clipped()
+                    // Game Area
+                    ZStack {
+                        // Game background
+                        Rectangle()
+                            .fill(Color.black.opacity(0.3))
+                            .frame(height: geometry.size.height * 0.7)
+                        
+                        // Game content
+                        GeometryReader { gameGeometry in
+                            ZStack {
+                                // Trajectory line
+                                if isDragging {
+                                    BubbleTrajectoryView(points: gameLogic.trajectoryPoints)
+                                }
+                                
+                                // Grid bubbles
+                                ForEach(gameLogic.grid.bubbles) { bubble in
+                                    BubbleView(bubble: bubble, size: gameLogic.grid.bubbleSize)
+                                        .position(bubble.position)
+                                }
+                                
+                                // Current bubble (shooter)
+                                if let currentBubble = gameLogic.currentBubble {
+                                    BubbleView(bubble: currentBubble, size: gameLogic.grid.bubbleSize)
+                                        .position(currentBubble.position)
+                                }
+                            }
+                            .frame(width: gameGeometry.size.width, height: gameGeometry.size.height)
+                            .clipped()
+                            .gesture(
+                                DragGesture(coordinateSpace: .local)
+                                    .onChanged { value in
+                                        isDragging = true
+                                        dragLocation = value.location
+                                        gameLogic.updateTrajectory(targetPoint: value.location)
+                                    }
+                                    .onEnded { value in
+                                        isDragging = false
+                                        gameLogic.shootBubble(towards: value.location)
+                                        soundManager.playBubbleShoot()
+                                    }
+                            )
+                        }
+                        .frame(height: geometry.size.height * 0.7)
+                    }
                     
                     // Bottom UI
                     HStack {
