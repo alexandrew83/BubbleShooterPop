@@ -163,8 +163,3 @@ class BubbleGrid: ObservableObject {
     }
 }
 
-extension Set where Element == Bubble {
-    func contains(_ bubble: Bubble) -> Bool {
-        return self.contains { $0.id == bubble.id }
-    }
-}

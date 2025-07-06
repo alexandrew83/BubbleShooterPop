@@ -39,7 +39,7 @@ class GameLogic: ObservableObject {
             y: point.y - startPoint.y
         )
         let length = sqrt(direction.x * direction.x + direction.y * direction.y)
-        let normalizedDirection = CGPoint(
+        var normalizedDirection = CGPoint(
             x: direction.x / length,
             y: direction.y / length
         )
@@ -138,7 +138,7 @@ class GameLogic: ObservableObject {
             y: target.y - start.y
         )
         let length = sqrt(direction.x * direction.x + direction.y * direction.y)
-        let normalizedDirection = CGPoint(
+        var normalizedDirection = CGPoint(
             x: direction.x / length,
             y: direction.y / length
         )

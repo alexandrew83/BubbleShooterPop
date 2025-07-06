@@ -1,7 +1,7 @@
 import SwiftUI
 import Foundation
 
-enum BubbleType: CaseIterable {
+enum BubbleType: CaseIterable, Hashable {
     case red
     case blue
     case green
@@ -58,7 +58,7 @@ enum BubbleType: CaseIterable {
     }
 }
 
-struct Bubble: Identifiable, Equatable {
+struct Bubble: Identifiable, Equatable, Hashable {
     let id = UUID()
     var type: BubbleType
     var position: CGPoint
@@ -73,6 +73,10 @@ struct Bubble: Identifiable, Equatable {
     
     static func == (lhs: Bubble, rhs: Bubble) -> Bool {
         return lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
     }
     
     func distance(to other: Bubble) -> CGFloat {
